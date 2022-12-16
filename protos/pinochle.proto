@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package claco.pinochle;
+
+option go_package = "github.com/claco/claco.pinochle";
+
+message Board {
+    repeated Card stock = 1;
+    repeated Card discards = 2;
+    repeated Meld melds = 3;
+}
+
+enum CardSuit {
+    Unspecified = 0;
+    Clubs = 1;
+    Diamonds = 2;
+    Hearts = 3;
+    Spades = 4;
+}
+
+enum GameStatus {
+    New = 0;
+    Playing = 1;
+    Completed = 2;
+}
+
+message Card {
+    CardSuit suit = 1;
+    string symbol = 2;
+}
+
+message Deck {
+    repeated Card cards = 1;
+}
+
+message Game {
+    int32 id = 1;
+    string slug = 2;
+    string name = 3;
+    Board board = 4;
+    repeated Player players = 5;
+    GameStatus status = 6;
+}
+
+message Meld {}
+
+message Player {}
+
+message CreateGameRequest {
+    string name = 1;
+}
+
+message CreateGameResponse {
+    Game game = 1;
+}
+
+message GetGameRequest {
+    string slug = 1;
+}
+
+message GetGameResponse {
+    Game game = 1;
+}
+
+message ListGamesRequest {
+
+}
+
+message StartGameRequest {
+    string slug = 1; 
+}
+
+message StartGameResponse {
+    Game game = 1;
+}
+
+service PinochleService {
+    rpc CreateGame (CreateGameRequest) returns (CreateGameResponse);
+    rpc GetGame (GetGameRequest) returns (GetGameResponse);
+    rpc ListGames (ListGamesRequest) returns (stream Game);
+    rpc StartGame (StartGameRequest) returns (StartGameResponse);
+}
