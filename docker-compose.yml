@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres:15-alpine
+    container_name: pinochle-database
+    hostname: pinochle-database
+    environment:
+      POSTGRES_DB: pinochle
+      POSTGRES_USER: pinochle
+      POSTGRES_PASSWORD: pinochle
+    ports:
+      - 5432:5432
+    pull_policy: always
+  service:
+    image: pinochle-service
+    container_name: pinochle-service
+    hostname: pinochle-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      pull: true
+    depends_on:
+      - database
+    command: [ "service", "run", "--logs", "--debug", "--migrate" ]
+    environment:
+      DATABASE_HOST: pinochle-database
+      DATABASE_NAME: pinochle
+      DATABASE_USER: pinochle
+      DATABASE_PASSWORD: pinochle
+      SERVICE_ADDRESS: "[::]"
+    ports:
+      - 50051:50051
+    tmpfs:
+      - /tmp:uid=1000,gid=1000

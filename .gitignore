@@ -1,0 +1,4 @@
+dist
+coverage.out
+coverage.xml
+node_modules
