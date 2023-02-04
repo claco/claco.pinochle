@@ -1,0 +1,19 @@
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS boards (
+   id UUID PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS games (
+   id UUID PRIMARY KEY,
+   slug VARCHAR(25) NOT NULL,
+   name VARCHAR(25) NOT NULL,
+   board_id UUID NOT NULL,
+   status SMALLINT NOT NULL DEFAULT 0,
+
+   CONSTRAINT fk_board_id
+      FOREIGN KEY(board_id)
+         REFERENCES boards(id)
+);
+
+COMMIT;

@@ -1,0 +1,144 @@
+// protolint:disable INDENT REPEATED_FIELD_NAMES_PLURALIZED
+// protolint:disable ENUM_FIELD_NAMES_PREFIX ENUM_FIELD_NAMES_UPPER_SNAKE_CASE
+// protolint:disable ENUM_FIELD_NAMES_ZERO_VALUE_END_WITH
+syntax = "proto3";
+
+package claco.pinochle;
+
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+
+option csharp_namespace = "Pinochle.Api";
+option go_package = "./pb";
+
+message Board {
+    string id = 1;
+    repeated Card stock = 2;
+    repeated Card discards = 3;
+    repeated Meld melds = 4;
+}
+
+enum CardSuit {
+    Unspecified = 0;
+    Clubs = 1;
+    Diamonds = 2;
+    Hearts = 3;
+    Spades = 4;
+}
+
+enum GameStatus {
+    New = 0;
+    Playing = 1;
+    Completed = 2;
+}
+
+enum ServiceResultCode {
+    Ok = 0;
+    Error = 1;
+}
+
+message Card {
+    CardSuit suit = 1;
+    string symbol = 2;
+}
+
+message Deck {
+    repeated Card cards = 1;
+}
+
+message Game {
+    string id = 1;
+    string slug = 2;
+    string name = 3;
+    Board board = 4;
+    repeated Player players = 5;
+    GameStatus status = 6;
+}
+
+message Meld {}
+
+message Player {}
+
+message PinochleServiceEvent {
+    string event = 1;
+    google.protobuf.Struct detail = 2;
+}
+
+message PinochleServiceResult {
+    ServiceResultCode code = 1;
+    optional string message = 2;
+    repeated PinochleServiceEvent events = 3;
+}
+
+message CreateGameRequest {
+    string id = 1;
+    string name = 2;
+}
+
+message CreateGameResponse {
+    PinochleServiceResult result = 1;
+    Game game = 2;
+}
+
+message GetGameRequest {
+    string id = 1;
+    string slug = 2;
+}
+
+message GetGameResponse {
+    PinochleServiceResult result = 1;
+    Game game = 2;
+}
+
+message ListGamesRequest {
+
+}
+
+message ResumeGameRequest {
+    string id = 1;
+    string slug = 2;
+}
+
+message ResumeGameResponse {
+    PinochleServiceResult result = 1;
+    Game game = 2;
+}
+
+message StartGameRequest {
+    string id = 1;
+    string slug = 2;
+}
+
+message StartGameResponse {
+    PinochleServiceResult result = 1;
+    Game game = 2;
+}
+
+service PinochleService {
+    rpc CreateGame (CreateGameRequest) returns (CreateGameResponse) {
+        option (google.api.http) = {
+            post: "/games/{id}"
+            body: "*"
+        };
+    };
+    rpc GetGame (GetGameRequest) returns (GetGameResponse) {
+        option (google.api.http) = {
+            get: "/games/{id}"
+        };
+    };
+    rpc ListGames (ListGamesRequest) returns (stream Game) {
+        option (google.api.http) = {
+            get: "/games"
+        };
+    };
+    rpc ResumeGame (ResumeGameRequest) returns (ResumeGameResponse) {
+        option (google.api.http) = {
+            post: "/games/{id}/resume"
+        };
+    };
+    rpc StartGame (StartGameRequest) returns (StartGameResponse) {
+        option (google.api.http) = {
+            post: "/games/{id}/start"
+        };
+    };
+}

@@ -1,0 +1,412 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "pinochle.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "PinochleService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/games": {
+      "get": {
+        "operationId": "PinochleService_ListGames",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/pinochleGame"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of pinochleGame"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "PinochleService"
+        ]
+      }
+    },
+    "/games/{id}": {
+      "get": {
+        "operationId": "PinochleService_GetGame",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pinochleGetGameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slug",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PinochleService"
+        ]
+      },
+      "post": {
+        "operationId": "PinochleService_CreateGame",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pinochleCreateGameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "PinochleService"
+        ]
+      }
+    },
+    "/games/{id}/resume": {
+      "post": {
+        "operationId": "PinochleService_ResumeGame",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pinochleResumeGameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slug",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PinochleService"
+        ]
+      }
+    },
+    "/games/{id}/start": {
+      "post": {
+        "operationId": "PinochleService_StartGame",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pinochleStartGameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slug",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PinochleService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "pinochleBoard": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "stock": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pinochleCard"
+          }
+        },
+        "discards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pinochleCard"
+          }
+        },
+        "melds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pinochleMeld"
+          }
+        }
+      }
+    },
+    "pinochleCard": {
+      "type": "object",
+      "properties": {
+        "suit": {
+          "$ref": "#/definitions/pinochleCardSuit"
+        },
+        "symbol": {
+          "type": "string"
+        }
+      }
+    },
+    "pinochleCardSuit": {
+      "type": "string",
+      "enum": [
+        "Unspecified",
+        "Clubs",
+        "Diamonds",
+        "Hearts",
+        "Spades"
+      ],
+      "default": "Unspecified"
+    },
+    "pinochleCreateGameResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/pinochlePinochleServiceResult"
+        },
+        "game": {
+          "$ref": "#/definitions/pinochleGame"
+        }
+      }
+    },
+    "pinochleGame": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "board": {
+          "$ref": "#/definitions/pinochleBoard"
+        },
+        "players": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pinochlePlayer"
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/pinochleGameStatus"
+        }
+      }
+    },
+    "pinochleGameStatus": {
+      "type": "string",
+      "enum": [
+        "New",
+        "Playing",
+        "Completed"
+      ],
+      "default": "New"
+    },
+    "pinochleGetGameResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/pinochlePinochleServiceResult"
+        },
+        "game": {
+          "$ref": "#/definitions/pinochleGame"
+        }
+      }
+    },
+    "pinochleMeld": {
+      "type": "object"
+    },
+    "pinochlePinochleServiceEvent": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "object"
+        }
+      }
+    },
+    "pinochlePinochleServiceResult": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/definitions/pinochleServiceResultCode"
+        },
+        "message": {
+          "type": "string"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pinochlePinochleServiceEvent"
+          }
+        }
+      }
+    },
+    "pinochlePlayer": {
+      "type": "object"
+    },
+    "pinochleResumeGameResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/pinochlePinochleServiceResult"
+        },
+        "game": {
+          "$ref": "#/definitions/pinochleGame"
+        }
+      }
+    },
+    "pinochleServiceResultCode": {
+      "type": "string",
+      "enum": [
+        "Ok",
+        "Error"
+      ],
+      "default": "Ok"
+    },
+    "pinochleStartGameResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/pinochlePinochleServiceResult"
+        },
+        "game": {
+          "$ref": "#/definitions/pinochleGame"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

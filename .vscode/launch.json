@@ -1,0 +1,13 @@
+{
+    "configurations": [
+        {
+            "name": "Attach to Server (Debug)",
+            "type": "go",
+            "request": "attach",
+            "mode": "remote",
+            "port": 2345,
+            "showLog": true,
+            "remotePath": "/usr/src/pinochle"
+        }
+    ]
+}
